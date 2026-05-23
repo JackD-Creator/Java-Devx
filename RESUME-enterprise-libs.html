@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background:#fff; color:#1e293b; font-size:9.5pt; line-height:1.5; }
+
+  .header { background:#0f172a; padding:28px 40px 22px; }
+  .header-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+  .project-name { font-size:28pt; font-weight:800; color:#fff; letter-spacing:-0.5px; }
+  .project-name span { color:#f59e0b; }
+  .version-box { border:2px solid #f59e0b; border-radius:6px; padding:4px 12px; text-align:center; }
+  .version-label { font-size:7pt; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; }
+  .version-num { font-size:14pt; font-weight:800; color:#f59e0b; }
+  .version-date { font-size:7.5pt; color:#94a3b8; text-align:right; margin-top:2px; }
+  .subtitle { color:#94a3b8; font-size:10pt; margin-bottom:12px; }
+  .tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .tag { border:1px solid #334155; border-radius:4px; padding:2px 10px; font-size:7.5pt; color:#cbd5e1; }
+  .tag-hl { border:1px solid #f59e0b; border-radius:4px; padding:2px 10px; font-size:7.5pt; color:#f59e0b; }
+
+  .body { padding:24px 40px; }
+
+  .section-title { display:flex; align-items:center; margin-bottom:12px; margin-top:18px; break-after:avoid; page-break-after:avoid; }
+  .section-title::before { content:''; display:block; width:4px; height:20px; background:#2563eb; border-radius:2px; margin-right:10px; }
+  .section-title h2 { font-size:12pt; font-weight:700; color:#1e293b; }
+
+  .summary-box { background:#f8fafc; border:1px solid #e2e8f0; border-left:3px solid #f59e0b; border-radius:6px; padding:14px 16px; margin-bottom:6px; break-inside:avoid; page-break-inside:avoid; }
+  .summary-box p { font-size:9pt; color:#334155; line-height:1.6; }
+
+  .meta-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:4px; break-inside:avoid; }
+  .meta-item { background:#f8fafc; border:1px solid #e2e8f0; border-radius:5px; padding:8px 12px; break-inside:avoid; page-break-inside:avoid; }
+  .meta-label { font-size:7pt; font-weight:700; color:#2563eb; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px; }
+  .meta-value { font-size:8.5pt; color:#1e293b; font-weight:600; }
+  .meta-sub { font-size:7.5pt; color:#64748b; }
+
+  .card-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; break-inside:avoid; }
+  .card { border:1px solid #e2e8f0; border-radius:6px; padding:12px 14px; break-inside:avoid; page-break-inside:avoid; }
+  .card-title { font-size:9.5pt; font-weight:700; color:#1e293b; margin-bottom:4px; }
+  .card-sub { font-size:7.5pt; color:#64748b; margin-bottom:6px; font-style:italic; }
+  .card ul { padding-left:0; list-style:none; }
+  .card ul li { font-size:8pt; color:#334155; padding:1.5px 0; display:flex; gap:5px; }
+  .card ul li::before { content:'•'; color:#2563eb; flex-shrink:0; }
+  .card-teal .card-title { color:#0d9488; }
+  .card-teal ul li::before { color:#0d9488; }
+
+  table { width:100%; border-collapse:collapse; font-size:8pt; break-inside:avoid; page-break-inside:avoid; }
+  thead th { background:#1e293b; color:#fff; padding:7px 10px; text-align:left; font-size:8pt; }
+  tbody tr:nth-child(even) { background:#f8fafc; }
+  tbody tr:nth-child(odd) { background:#fff; }
+  tbody td { padding:5px 10px; border-bottom:1px solid #e2e8f0; vertical-align:top; }
+  .td-mono { font-family:'Courier New',monospace; font-size:7.5pt; color:#0d9488; }
+  .td-badge { display:inline-block; padding:1px 7px; border-radius:3px; font-size:7pt; font-weight:600; }
+  .badge-pg   { background:#dbeafe; color:#1e40af; }
+  .badge-maria{ background:#dcfce7; color:#166534; }
+  .badge-mssql{ background:#fef3c7; color:#92400e; }
+  .badge-all  { background:#f1f5f9; color:#475569; }
+
+  .infra-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; break-inside:avoid; }
+  .infra-card { border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; break-inside:avoid; page-break-inside:avoid; }
+  .infra-label { font-size:7pt; font-weight:700; color:#2563eb; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px; }
+  .infra-title { font-size:9pt; font-weight:700; color:#1e293b; }
+  .infra-sub { font-size:7.5pt; color:#64748b; margin-top:2px; }
+
+  .feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; break-inside:avoid; }
+  .feature-card { border:1px solid #e2e8f0; border-radius:6px; padding:10px 14px; break-inside:avoid; page-break-inside:avoid; }
+  .feature-card-title { font-size:9pt; font-weight:700; color:#1e293b; margin-bottom:3px; }
+  .feature-card p { font-size:8pt; color:#475569; line-height:1.5; }
+  .check { color:#16a34a; font-weight:700; margin-right:4px; }
+
+  .db-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; break-inside:avoid; }
+  .db-card { border-radius:6px; padding:12px 14px; break-inside:avoid; page-break-inside:avoid; }
+  .db-card-pg    { background:#eff6ff; border:1.5px solid #bfdbfe; }
+  .db-card-maria { background:#f0fdf4; border:1.5px solid #bbf7d0; }
+  .db-card-mssql { background:#fffbeb; border:1.5px solid #fde68a; }
+  .db-card-title { font-size:10pt; font-weight:800; margin-bottom:2px; }
+  .db-card-pg    .db-card-title { color:#1e40af; }
+  .db-card-maria .db-card-title { color:#166534; }
+  .db-card-mssql .db-card-title { color:#92400e; }
+  .db-card-sub { font-size:7.5pt; color:#64748b; margin-bottom:8px; }
+  .db-card ul { list-style:none; padding:0; }
+  .db-card ul li { font-size:7.5pt; color:#334155; padding:2px 0; display:flex; gap:5px; }
+  .db-card-pg    ul li::before { content:'▸'; color:#3b82f6; flex-shrink:0; }
+  .db-card-maria ul li::before { content:'▸'; color:#22c55e; flex-shrink:0; }
+  .db-card-mssql ul li::before { content:'▸'; color:#f59e0b; flex-shrink:0; }
+
+  .code-block { background:#1e293b; border-radius:6px; padding:12px 16px; margin-top:4px; break-inside:avoid; page-break-inside:avoid; }
+  .code-block pre { font-family:'Courier New',monospace; font-size:7.5pt; color:#94a3b8; line-height:1.7; }
+  .co { color:#475569; }
+  .cm { color:#7dd3fc; }
+  .ck { color:#f59e0b; }
+
+  .sim-table { width:100%; border-collapse:collapse; break-inside:avoid; page-break-inside:avoid; }
+  .sim-table th { background:#0f172a; color:#fff; padding:6px 10px; text-align:left; font-size:7.5pt; }
+  .sim-table td { padding:4px 10px; border-bottom:1px solid #e2e8f0; font-size:7.5pt; vertical-align:middle; }
+  .sim-table tr:nth-child(even) td { background:#f8fafc; }
+  .sim-ok { color:#16a34a; font-weight:700; }
+  .method-get { color:#3b82f6; font-weight:700; font-family:'Courier New',monospace; font-size:7pt; }
+  .method-post { color:#16a34a; font-weight:700; font-family:'Courier New',monospace; font-size:7pt; }
+  .method-put { color:#f59e0b; font-weight:700; font-family:'Courier New',monospace; font-size:7pt; }
+  .method-del { color:#ef4444; font-weight:700; font-family:'Courier New',monospace; font-size:7pt; }
+
+  .fix-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; break-inside:avoid; }
+  .fix-card { border:1.5px solid #fde68a; background:#fffbeb; border-radius:6px; padding:10px 14px; break-inside:avoid; page-break-inside:avoid; }
+  .fix-card-title { font-size:8.5pt; font-weight:700; color:#92400e; margin-bottom:5px; }
+  .fix-badge { display:inline-block; padding:2px 7px; border-radius:3px; font-size:6.5pt; font-weight:700; font-family:'Courier New',monospace; margin-bottom:3px; }
+  .fix-before { background:#fef2f2; color:#dc2626; }
+  .fix-after  { background:#f0fdf4; color:#15803d; }
+  .fix-desc { font-size:7.5pt; color:#475569; margin-top:5px; line-height:1.5; }
+
+  .page-break { page-break-before: always; }
+
+  .footer { background:#0f172a; padding:14px 40px; display:flex; justify-content:space-between; align-items:center; margin-top:28px; }
+  .footer-left   { font-size:7.5pt; color:#64748b; }
+  .footer-center { font-size:8pt; font-weight:700; color:#f59e0b; }
+  .footer-right  { font-size:7.5pt; color:#64748b; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════ HEADER PAGE 1 -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="project-name">enterprise<span>-libs</span></div>
+      <div class="subtitle">Monorepo Framework — Quarkus (Java) + Nuxt 3 (TypeScript)</div>
+    </div>
+    <div>
+      <div class="version-box"><div class="version-label">Versi</div><div class="version-num">v1.0</div></div>
+      <div class="version-date">Mei 2026</div>
+    </div>
+  </div>
+  <div class="tags">
+    <span class="tag">Quarkus 3.15</span>
+    <span class="tag">Java 21</span>
+    <span class="tag">Nuxt 3</span>
+    <span class="tag">TypeScript 5</span>
+    <span class="tag-hl">PostgreSQL · MariaDB · MSSQL</span>
+    <span class="tag">Docker</span>
+    <span class="tag">AES-256 / RSA-2048</span>
+    <span class="tag">Microservice Ready</span>
+    <span class="tag">Native Binary</span>
+    <span class="tag">Multi-Module Maven</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ BODY PAGE 1 -->
+<div class="body">
+
+  <div class="section-title"><h2>Ringkasan Proyek</h2></div>
+  <div class="summary-box">
+    <p><strong>enterprise-libs</strong> adalah monorepo framework enterprise yang menyediakan modul-modul siap pakai untuk backend berbasis <strong>Quarkus/Java</strong> dan frontend berbasis <strong>Nuxt 3/TypeScript</strong>. Framework ini dirancang untuk mempercepat pengembangan aplikasi enterprise dengan mengikuti arsitektur microservice, containerization Docker, enkripsi data tingkat enterprise, sistem tema dinamis, dan <strong>dukungan multi-database</strong> (PostgreSQL, MariaDB, MSSQL) tanpa perubahan kode — cukup ganti environment variable. Frontend tidak perlu diubah karena hanya bicara ke REST API.</p>
+  </div>
+
+  <div class="meta-grid" style="margin-top:12px;">
+    <div class="meta-item">
+      <div class="meta-label">Repository</div>
+      <div class="meta-value">JackD-Creator/Java-Devx</div>
+      <div class="meta-sub">github.com · branch: master</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Backend Stack</div>
+      <div class="meta-value">Quarkus 3.15.1 + Java 21</div>
+      <div class="meta-sub">Maven multi-module · Flyway · Panache</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Frontend Stack</div>
+      <div class="meta-value">Nuxt 3 + Vue 3 + TypeScript</div>
+      <div class="meta-sub">npm workspaces · @nuxt/module-builder</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Database Support</div>
+      <div class="meta-value">PostgreSQL · MariaDB · MSSQL</div>
+      <div class="meta-sub">Flyway migration per vendor · DB_URL env var</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Container</div>
+      <div class="meta-value">Docker (Rancher Desktop)</div>
+      <div class="meta-sub">docker-compose per modul · WSL 2</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Lisensi &amp; Status</div>
+      <div class="meta-value">MIT · v1.0.0-SNAPSHOT</div>
+      <div class="meta-sub">Production-ready · Mei 2026</div>
+    </div>
+  </div>
+
+  <!-- Modul Backend -->
+  <div class="section-title"><h2>Modul Backend (3 Modul)</h2></div>
+  <div class="card-grid">
+    <div class="card card-teal">
+      <div class="card-title">quarkus-db-adapter</div>
+      <div class="card-sub">Abstraksi database enterprise — PostgreSQL, MariaDB, MSSQL</div>
+      <ul>
+        <li>BaseEntity — id SEQUENCE/50, createdAt, updatedAt, createdBy, updatedBy</li>
+        <li>PageResult&lt;T&gt; — generic paginasi: data, total, page, size, totalPages</li>
+        <li>BaseRepository&lt;E&gt; — findAllPaginated, findByQueryPaginated, saveOrUpdate</li>
+        <li>DatabaseHealthCheck — @Liveness @Readiness via JDBC isValid(2)</li>
+        <li>Driver: quarkus-jdbc-postgresql + mariadb + mssql</li>
+        <li>Config: DB_KIND + DB_URL (full JDBC URL per vendor)</li>
+      </ul>
+    </div>
+    <div class="card card-teal">
+      <div class="card-title">quarkus-encryption</div>
+      <div class="card-sub">Library enkripsi enterprise multi-algoritma</div>
+      <ul>
+        <li>AES-256-GCM — 12-byte random IV, output Base64(IV+ciphertext)</li>
+        <li>RSA-2048 OAEP — generateKeyPair, load dari Base64</li>
+        <li>BCrypt password hash (cost=12) + SHA-256/512 checksum</li>
+        <li>HMAC-SHA256 + safeEquals() constant-time comparison</li>
+        <li>REST endpoint opsional (toggle via application.properties)</li>
+      </ul>
+    </div>
+    <div class="card card-teal" style="grid-column:1/-1;">
+      <div class="card-title">quarkus-theme-api</div>
+      <div class="card-sub">REST API manajemen tema dinamis — support PostgreSQL, MariaDB, MSSQL</div>
+      <ul style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+        <li>Theme model — PanacheEntityBase + @GeneratedValue(IDENTITY) untuk semua DB</li>
+        <li>ThemeService — CRUD + activate() deactivate-all-others logic</li>
+        <li>7 REST endpoint: GET /themes, /active, /{id}, POST, PUT, /activate, DELETE</li>
+        <li>Flyway locations dinamis: <code>db/migration/${DB_KIND}</code></li>
+        <li>Migration terpisah: postgresql/ · mariadb/ · mssql/</li>
+        <li>Docker compose: DB_URL pakai hostname service Docker (bukan localhost)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Modul Frontend -->
+  <div class="section-title"><h2>Modul Frontend (3 Modul)</h2></div>
+  <div class="card-grid">
+    <div class="card card-teal">
+      <div class="card-title">nuxt-theme-lib</div>
+      <div class="card-sub">Nuxt module tema dinamis dari API — tidak perlu update untuk multi-DB</div>
+      <ul>
+        <li>Fetch tema aktif saat boot, SSR-safe via useState</li>
+        <li>applyToDocument() — tulis CSS custom properties ke &lt;html&gt;</li>
+        <li>useTheme() — fetchActiveTheme, fetchAllThemes, setThemeLocally</li>
+        <li>Tipe: ThemeTokens, ThemeColors, ThemeTypography, ThemeSpacing</li>
+        <li>Preset bawaan: themes/default.ts dan themes/dark.ts</li>
+      </ul>
+    </div>
+    <div class="card card-teal">
+      <div class="card-title">nuxt-ui-lib</div>
+      <div class="card-sub">Library komponen UI enterprise untuk Nuxt 3</div>
+      <ul>
+        <li>EButton — 5 variant, 5 size, loading spinner, block prop</li>
+        <li>EInput — v-model, label, error/hint, useId() a11y, SSR-safe</li>
+        <li>ETable&lt;T&gt; — sortable, slot #cell-{key}, empty state, generic</li>
+        <li>EModal — Teleport body, Transition, closeOnOverlay, 3 slot</li>
+        <li>EBadge — 6 warna dengan color-mix() tint</li>
+        <li>EPageContainer + tailwind.config.ts (CSS vars → Tailwind)</li>
+      </ul>
+    </div>
+    <div class="card card-teal" style="grid-column:1/-1;">
+      <div class="card-title">nuxt-composables</div>
+      <div class="card-sub">Kumpulan Vue 3 composable siap pakai untuk enterprise</div>
+      <ul style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+        <li>useForm&lt;T&gt; — Rules validator, errors reactive, handleSubmit async, reset, touched</li>
+        <li>usePermission — useState SSR-safe, hasRole, hasPermission, hasAll, isAdmin</li>
+        <li>usePagination — page/size/total, totalPages computed, next/previous/goTo</li>
+        <li>useLocalStorage&lt;T&gt; — SSR-safe, deep watch, JSON serialize/deserialize</li>
+        <li>useDebounce&lt;T&gt; — delay configurable (default 300ms)</li>
+        <li>useThrottle&lt;T&gt; — interval configurable (default 300ms)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">enterprise-libs — Framework Document</div>
+  <div class="footer-center">Developed by PT. Temp Solusi Kreasi</div>
+  <div class="footer-right">Mei 2026 · Quarkus 3 + Nuxt 3 + TypeScript</div>
+</div>
+
+<!-- ══════════════════════════════ PAGE 2 -->
+<div class="page-break"></div>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="project-name">enterprise<span>-libs</span></div>
+      <div class="subtitle">Monorepo Framework — Quarkus (Java) + Nuxt 3 (TypeScript)</div>
+    </div>
+    <div>
+      <div class="version-box"><div class="version-label">Versi</div><div class="version-num">v1.0</div></div>
+      <div class="version-date">Mei 2026</div>
+    </div>
+  </div>
+  <div class="tags">
+    <span class="tag">Quarkus 3.15</span><span class="tag">Java 21</span><span class="tag">Nuxt 3</span>
+    <span class="tag">TypeScript 5</span><span class="tag-hl">PostgreSQL · MariaDB · MSSQL</span>
+    <span class="tag">Docker</span><span class="tag">AES-256 / RSA-2048</span>
+    <span class="tag">Microservice Ready</span><span class="tag">Native Binary</span>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- Multi-DB Support -->
+  <div class="section-title"><h2>Multi-Database Support</h2></div>
+  <div class="db-grid">
+    <div class="db-card db-card-pg">
+      <div class="db-card-title">PostgreSQL</div>
+      <div class="db-card-sub">Default · Versi 16+</div>
+      <ul>
+        <li>Driver: quarkus-jdbc-postgresql</li>
+        <li>Auto-increment: BIGSERIAL</li>
+        <li>Boolean: BOOLEAN</li>
+        <li>JSON: TEXT / JSONB</li>
+        <li>Timestamp: NOW()</li>
+        <li>Migration: db/migration/postgresql/</li>
+      </ul>
+      <div style="margin-top:8px;font-size:7pt;font-family:'Courier New',monospace;background:#dbeafe;padding:6px 8px;border-radius:4px;color:#1e3a8a;line-height:1.6;">
+        DB_KIND=postgresql<br>
+        DB_URL=jdbc:postgresql://<br>&nbsp;&nbsp;localhost:5432/mydb
+      </div>
+    </div>
+    <div class="db-card db-card-maria">
+      <div class="db-card-title">MariaDB</div>
+      <div class="db-card-sub">Versi 10.2+ · MySQL compatible</div>
+      <ul>
+        <li>Driver: quarkus-jdbc-mariadb</li>
+        <li>Auto-increment: BIGINT AUTO_INCREMENT</li>
+        <li>Boolean: TINYINT(1)</li>
+        <li>JSON: LONGTEXT</li>
+        <li>Timestamp: CURRENT_TIMESTAMP ON UPDATE</li>
+        <li>Migration: db/migration/mariadb/</li>
+      </ul>
+      <div style="margin-top:8px;font-size:7pt;font-family:'Courier New',monospace;background:#dcfce7;padding:6px 8px;border-radius:4px;color:#14532d;line-height:1.6;">
+        DB_KIND=mariadb<br>
+        DB_URL=jdbc:mariadb://<br>&nbsp;&nbsp;localhost:3306/mydb
+      </div>
+    </div>
+    <div class="db-card db-card-mssql">
+      <div class="db-card-title">MSSQL</div>
+      <div class="db-card-sub">SQL Server 2017+ / Azure SQL</div>
+      <ul>
+        <li>Driver: quarkus-jdbc-mssql</li>
+        <li>Auto-increment: BIGINT IDENTITY(1,1)</li>
+        <li>Boolean: BIT</li>
+        <li>JSON: NVARCHAR(MAX)</li>
+        <li>Timestamp: GETDATE()</li>
+        <li>Migration: db/migration/mssql/</li>
+      </ul>
+      <div style="margin-top:8px;font-size:7pt;font-family:'Courier New',monospace;background:#fef3c7;padding:6px 8px;border-radius:4px;color:#78350f;line-height:1.6;">
+        DB_KIND=mssql<br>
+        DB_URL=jdbc:sqlserver://<br>&nbsp;&nbsp;localhost:1433;<br>&nbsp;&nbsp;databaseName=mydb;<br>&nbsp;&nbsp;encrypt=false
+      </div>
+    </div>
+  </div>
+
+  <!-- DB Comparison Table -->
+  <div style="margin-top:14px;break-inside:avoid;page-break-inside:avoid;">
+    <table>
+      <thead>
+        <tr>
+          <th>Aspek</th>
+          <th><span class="td-badge badge-pg">PostgreSQL</span></th>
+          <th><span class="td-badge badge-maria">MariaDB</span></th>
+          <th><span class="td-badge badge-mssql">MSSQL</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-mono">Primary Key</td>
+          <td>BIGSERIAL</td>
+          <td>BIGINT AUTO_INCREMENT</td>
+          <td>BIGINT IDENTITY(1,1)</td>
+        </tr>
+        <tr>
+          <td class="td-mono">Boolean</td>
+          <td>BOOLEAN</td>
+          <td>TINYINT(1)</td>
+          <td>BIT</td>
+        </tr>
+        <tr>
+          <td class="td-mono">String Unicode</td>
+          <td>VARCHAR / TEXT</td>
+          <td>VARCHAR / LONGTEXT</td>
+          <td>NVARCHAR / NVARCHAR(MAX)</td>
+        </tr>
+        <tr>
+          <td class="td-mono">Timestamp default</td>
+          <td>NOW()</td>
+          <td>CURRENT_TIMESTAMP</td>
+          <td>GETDATE()</td>
+        </tr>
+        <tr>
+          <td class="td-mono">Flyway folder</td>
+          <td>db/migration/postgresql/</td>
+          <td>db/migration/mariadb/</td>
+          <td>db/migration/mssql/</td>
+        </tr>
+        <tr>
+          <td class="td-mono">Frontend impact</td>
+          <td colspan="3" style="text-align:center;color:#16a34a;font-weight:600;">✓ Tidak ada — Frontend hanya bicara ke REST API</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section-title"><h2>Tech Stack</h2></div>
+  <div class="infra-grid">
+    <div class="infra-card">
+      <div class="infra-label">Backend Framework</div>
+      <div class="infra-title">Quarkus 3.15.1</div>
+      <div class="infra-sub">Java 21 · Eclipse Temurin<br>RESTEasy Reactive · Hibernate ORM Panache</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-label">Frontend Framework</div>
+      <div class="infra-title">Nuxt 3 + Vue 3</div>
+      <div class="infra-sub">TypeScript 5 · @nuxt/module-builder<br>SSR-safe · Auto-import composables</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-label">Database</div>
+      <div class="infra-title">PostgreSQL · MariaDB · MSSQL</div>
+      <div class="infra-sub">Flyway per vendor · DB_URL env<br>Hibernate ORM · JDBC health check</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-label">Security</div>
+      <div class="infra-title">Multi-Layer Encryption</div>
+      <div class="infra-sub">AES-256-GCM · RSA-2048 OAEP<br>BCrypt · SHA-256/512 · HMAC-SHA256</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-label">Container</div>
+      <div class="infra-title">Docker + Rancher Desktop</div>
+      <div class="infra-sub">Multi-stage Dockerfile · docker-compose<br>WSL 2 · moby engine 29.1.4</div>
+    </div>
+    <div class="infra-card">
+      <div class="infra-label">Build Tools</div>
+      <div class="infra-title">Maven 3.9 + npm ws</div>
+      <div class="infra-sub">GraalVM native profile · Makefile<br>npm workspaces · tsconfig paths</div>
+    </div>
+  </div>
+
+  <!-- Fitur Enterprise -->
+  <div class="section-title"><h2>Fitur Enterprise yang Diimplementasikan</h2></div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-card-title"><span class="check">✓</span>Microservice Architecture</div>
+      <p>Setiap modul independen dengan pom.xml/package.json sendiri, bisa di-deploy terpisah via Docker. Tidak ada coupling antar modul.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-title"><span class="check">✓</span>Container Friendly</div>
+      <p>Multi-stage Dockerfile di setiap modul. docker-compose.yml dengan healthcheck, environment variables, dan volume management.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-title"><span class="check">✓</span>Binary Apps Conversion</div>
+      <p>GraalVM native profile (<code>-Pnative</code>) tersedia di tiap modul backend. Kompilasi ke native binary tanpa JVM — startup &lt;50ms, memory &lt;50MB.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-title"><span class="check">✓</span>Database Adapter — Multi-DB</div>
+      <p>Support PostgreSQL, MariaDB, dan MSSQL. Cukup set <code>DB_KIND</code> + <code>DB_URL</code>. Flyway otomatis pilih migration SQL yang sesuai vendor.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-title"><span class="check">✓</span>Encryption Adapter</div>
+      <p>AES-256-GCM (data at rest), RSA-2048 OAEP (key exchange), BCrypt (password), HMAC-SHA256 (integrity), constant-time compare.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-title"><span class="check">✓</span>Themes Adapter</div>
+      <p>Design tokens (JSON) disimpan di DB → quarkus-theme-api → diambil nuxt-theme-lib → diterapkan sebagai CSS variables ke seluruh UI.</p>
+    </div>
+  </div>
+
+  <!-- Quick Start -->
+  <div class="section-title"><h2>Quick Start</h2></div>
+  <div class="code-block"><pre><span class="co"># Clone &amp; setup</span>
+<span class="cm">git clone https://github.com/JackD-Creator/Java-Devx.git</span>
+<span class="cm">cd Java-Devx/enterprise-libs</span>
+
+<span class="co"># Jalankan dengan PostgreSQL (default)</span>
+<span class="cm">cd backend-libs/quarkus-theme-api &amp;&amp; docker compose up -d</span>
+
+<span class="co"># Ganti ke MariaDB — edit .env lalu docker compose up</span>
+<span class="ck">DB_KIND</span>=mariadb  <span class="ck">DB_URL</span>=jdbc:mariadb://mariadb:3306/themedb
+
+<span class="co"># Ganti ke MSSQL</span>
+<span class="ck">DB_KIND</span>=mssql  <span class="ck">DB_URL</span>=jdbc:sqlserver://mssql:1433;databaseName=themedb;encrypt=false
+
+<span class="co"># Test API — semua endpoint verified live</span>
+<span class="cm">curl http://localhost:8080/api/themes          </span><span class="co"># list all</span>
+<span class="cm">curl http://localhost:8080/api/themes/active   </span><span class="co"># get active</span>
+<span class="cm">curl http://localhost:8080/q/swagger-ui        </span><span class="co"># Swagger UI</span></pre></div>
+
+  <!-- Simulasi & Validasi -->
+  <div class="section-title" style="margin-top:16px;"><h2>Simulasi &amp; Validasi API — Live Test</h2></div>
+  <div style="break-inside:avoid;page-break-inside:avoid;">
+    <table class="sim-table">
+      <thead>
+        <tr><th style="width:24px;">#</th><th style="width:52px;">Method</th><th>Endpoint</th><th>Aksi</th><th>Hasil</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><span class="method-get">GET</span></td><td class="td-mono">/api/themes</td><td>List semua tema</td><td class="sim-ok">✓ 200 — 2 tema (Default · Dark)</td></tr>
+        <tr><td>2</td><td><span class="method-get">GET</span></td><td class="td-mono">/api/themes/active</td><td>Ambil tema aktif</td><td class="sim-ok">✓ 200 — Default, active=true</td></tr>
+        <tr><td>3</td><td><span class="method-post">POST</span></td><td class="td-mono">/api/themes</td><td>Buat tema baru (Corporate Blue)</td><td class="sim-ok">✓ 201 — id=3, tenantId=tenant-001</td></tr>
+        <tr><td>4</td><td><span class="method-put">PUT</span></td><td class="td-mono">/api/themes/3/activate</td><td>Aktifkan tema baru</td><td class="sim-ok">✓ 200 — active=true, lainnya false</td></tr>
+        <tr><td>5</td><td><span class="method-put">PUT</span></td><td class="td-mono">/api/themes/3</td><td>Update nama &amp; mode</td><td class="sim-ok">✓ 200 — Corporate Blue v2, mode=dark</td></tr>
+        <tr><td>6</td><td><span class="method-del">DELETE</span></td><td class="td-mono">/api/themes/3</td><td>Hapus tema</td><td class="sim-ok">✓ 204 No Content</td></tr>
+        <tr><td>7</td><td><span class="method-get">GET</span></td><td class="td-mono">/api/themes/{id}</td><td>Ambil per ID</td><td class="sim-ok">✓ 200 OK · 404 jika tidak ada</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bug Fixes -->
+  <div class="section-title" style="margin-top:16px;"><h2>Technical Issues Resolved</h2></div>
+  <div class="fix-grid">
+    <div class="fix-card">
+      <div class="fix-card-title">Bug #1 — Hibernate Sequence Not Found</div>
+      <div><span class="fix-badge fix-before">PSQLException: relation "themes_seq" does not exist</span></div>
+      <div><span class="fix-badge fix-after">@GeneratedValue(strategy = IDENTITY) → pakai BIGSERIAL native</span></div>
+      <div class="fix-desc"><strong>Root cause:</strong> <code>PanacheEntity</code> default pakai SEQUENCE strategy dan mencari <code>themes_seq</code>, padahal PostgreSQL BIGSERIAL membuat sequence berbeda nama.<br><strong>Fix:</strong> Ganti ke <code>PanacheEntityBase</code> + <code>@GeneratedValue(IDENTITY)</code> — kompatibel PostgreSQL (BIGSERIAL), MariaDB (AUTO_INCREMENT), dan MSSQL (IDENTITY) sekaligus.</div>
+    </div>
+    <div class="fix-card">
+      <div class="fix-card-title">Bug #2 — Docker DB Connection Refused</div>
+      <div><span class="fix-badge fix-before">DB_HOST=postgres → app default ke localhost:5432</span></div>
+      <div><span class="fix-badge fix-after">DB_URL=jdbc:postgresql://postgres:5432/themedb</span></div>
+      <div class="fix-desc"><strong>Root cause:</strong> <code>docker-compose.yml</code> set env <code>DB_HOST</code> tapi aplikasi membaca <code>DB_URL</code>. Container tidak bisa resolve <code>localhost</code> ke service Postgres di jaringan Docker.<br><strong>Fix:</strong> Set <code>DB_URL</code> lengkap dengan hostname service Docker (<code>postgres</code>), bukan <code>localhost</code>.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-left">enterprise-libs — Framework Document</div>
+  <div class="footer-center">Developed by PT. Temp Solusi Kreasi</div>
+  <div class="footer-right">© 2026 - PT. Temp Solusi Kreasi - OM - All Rights Reserved</div>
+</div>
+
+</body>
+</html>
