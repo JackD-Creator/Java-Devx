@@ -2,7 +2,9 @@ version: "3.9"
 
 services:
   theme-api:
-    build: .
+    build:
+      context: ../..
+      dockerfile: backend-libs/quarkus-theme-api/Dockerfile
     ports:
       - "${APP_PORT:-8080}:8080"
     environment:

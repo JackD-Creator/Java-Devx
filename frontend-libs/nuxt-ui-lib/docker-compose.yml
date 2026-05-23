@@ -1,0 +1,10 @@
+services:
+  nuxt-ui-lib:
+    build: .
+    ports:
+      - "${APP_PORT:-3001}:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      NUXT_PUBLIC_APP_NAME: ${NUXT_PUBLIC_APP_NAME:-enterprise-app}
+      NUXT_PUBLIC_APP_ENV: ${NUXT_PUBLIC_APP_ENV:-production}
+    restart: unless-stopped
