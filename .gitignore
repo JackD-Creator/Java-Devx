@@ -1,0 +1,31 @@
+# Environment files — JANGAN di-commit
+.env
+.env.local
+.env.*.local
+
+# Maven build output
+target/
+*.class
+*.jar
+*.war
+
+# Node
+node_modules/
+dist/
+.nuxt/
+.output/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+postgres_data/
+node_modules

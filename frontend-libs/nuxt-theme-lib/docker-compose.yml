@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  nuxt-theme-lib:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      THEME_API_BASE_URL: ${THEME_API_BASE_URL:-http://localhost:8080}

@@ -1,0 +1,17 @@
+{
+  "name": "enterprise-libs",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend-libs/*"
+  ],
+  "scripts": {
+    "build:frontend": "npm run build --workspaces",
+    "test:frontend": "npm run test --workspaces",
+    "lint:frontend": "npm run lint --workspaces"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  }
+}

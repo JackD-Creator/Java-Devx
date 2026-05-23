@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "paths": {
+      "#app": ["./node_modules/nuxt/dist/app/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*", "module.ts", "themes/**/*"]
+}
