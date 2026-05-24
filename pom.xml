@@ -181,13 +181,11 @@
     </profile>
 
     <!--
-      Release profile — aktifkan dengan: mvn deploy -P release
+      Release profile - aktifkan dengan: mvn deploy -P release
       Prasyarat:
         1. Daftarkan groupId di https://central.sonatype.com
-        2. ~/.m2/settings.xml dengan credentials:
-             <server><id>central</id><username>TOKEN</username><password>TOKEN_PASSWORD</password></server>
-        3. GPG key: gpg --gen-key
-        4. Upload key: gpg --keyserver keyserver.ubuntu.com --send-keys <KEY_ID>
+        2. ~/.m2/settings.xml dengan server id=central + token credentials
+        3. GPG key: gpg -gen-key lalu export ke keyserver
     -->
     <profile>
       <id>release</id>

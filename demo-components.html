@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>enterprise-libs — Demo Komponen (Options API + Tailwind)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary:    '#3B82F6',
+          secondary:  '#6B7280',
+          accent:     '#8B5CF6',
+          success:    '#10B981',
+          warning:    '#F59E0B',
+          danger:     '#EF4444',
+          info:       '#3B82F6',
+          surface:    '#F9FAFB',
+          'e-border': '#E5E7EB',
+          'e-text':   '#111827',
+          'e-muted':  '#6B7280',
+          'e-bg':     '#FFFFFF',
+        }
+      }
+    }
+  }
+</script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; }
+  .section { border-bottom: 1px solid #E5E7EB; padding: 2rem 2.5rem; }
+  .label  { font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+             letter-spacing: 0.07em; color: #6B7280; margin-bottom: 0.875rem; }
+  .row    { display: flex; flex-wrap: wrap; gap: 0.625rem; align-items: center; }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- Header -->
+<div class="bg-slate-900 px-10 py-5 flex justify-between items-center shadow-lg">
+  <div>
+    <div class="text-2xl font-extrabold text-white tracking-tight">enterprise<span class="text-amber-400">-libs</span></div>
+    <div class="text-slate-400 text-xs mt-0.5">Demo Komponen — Options API + Full Tailwind CSS · Vue 3</div>
+  </div>
+  <div class="flex gap-2 items-center">
+    <span class="bg-green-500/20 text-green-400 text-xs px-2.5 py-1 rounded-full font-semibold">✓ Options API</span>
+    <span class="bg-sky-500/20 text-sky-400 text-xs px-2.5 py-1 rounded-full font-semibold">✓ Tailwind CSS</span>
+    <span class="border border-amber-400/50 text-amber-400 text-xs px-2.5 py-1 rounded">v1.0.0</span>
+  </div>
+</div>
+
+<div id="app">
+
+  <!-- EButton -->
+  <div class="section">
+    <div class="label">EButton — 5 Variant · 5 Size · loading · disabled · block</div>
+    <div class="row mb-3">
+      <e-button variant="primary">Primary</e-button>
+      <e-button variant="secondary">Secondary</e-button>
+      <e-button variant="accent">Accent</e-button>
+      <e-button variant="ghost">Ghost</e-button>
+      <e-button variant="danger">Danger</e-button>
+      <e-button variant="primary" :loading="true">Loading...</e-button>
+      <e-button variant="primary" :disabled="true">Disabled</e-button>
+    </div>
+    <div class="row mb-3">
+      <e-button size="xs">XS</e-button>
+      <e-button size="sm">SM</e-button>
+      <e-button size="md">MD</e-button>
+      <e-button size="lg">LG</e-button>
+      <e-button size="xl">XL</e-button>
+    </div>
+    <e-button :block="true" variant="secondary">Block Button — full width</e-button>
+  </div>
+
+  <!-- EInput -->
+  <div class="section">
+    <div class="label">EInput — Label · Error · Hint · Disabled · Size</div>
+    <div class="grid grid-cols-3 gap-4">
+      <e-input label="Email" placeholder="nama@perusahaan.com" v-model="fEmail"/>
+      <e-input label="Password" type="password" placeholder="••••••••" v-model="fPass"/>
+      <e-input label="Error State" placeholder="Isi field ini" error="Field wajib diisi" v-model="fErr"/>
+      <e-input label="Dengan Hint" placeholder="Ketik sesuatu..." hint="Maks 100 karakter" v-model="fHint"/>
+      <e-input label="Disabled" placeholder="Tidak bisa diedit" :disabled="true" v-model="fDis"/>
+      <e-input label="Large (lg)" size="lg" placeholder="Large size..." v-model="fLg"/>
+    </div>
+  </div>
+
+  <!-- EBadge -->
+  <div class="section">
+    <div class="label">EBadge — 6 Warna · 3 Size</div>
+    <div class="row mb-3">
+      <e-badge color="primary">Primary</e-badge>
+      <e-badge color="secondary">Secondary</e-badge>
+      <e-badge color="success">Success</e-badge>
+      <e-badge color="warning">Warning</e-badge>
+      <e-badge color="error">Error</e-badge>
+      <e-badge color="info">Info</e-badge>
+    </div>
+    <div class="row">
+      <e-badge size="xs" color="success">XS</e-badge>
+      <e-badge size="sm" color="primary">SM</e-badge>
+      <e-badge size="md" color="warning">MD</e-badge>
+    </div>
+  </div>
+
+  <!-- ETable -->
+  <div class="section">
+    <div class="label">ETable — Sortable columns · Custom slot · Row click</div>
+    <e-table :columns="tCols" :rows="tRows" @row-click="tClick">
+      <template #cell-status="{ value }">
+        <e-badge :color="value==='active'?'success':'secondary'">{{ value }}</e-badge>
+      </template>
+      <template #cell-db="{ value }">
+        <e-badge :color="value==='postgresql'?'primary':value==='mariadb'?'success':'warning'">{{ value }}</e-badge>
+      </template>
+    </e-table>
+    <p v-if="tClicked" class="mt-2 text-sm text-gray-500">
+      ✓ Row diklik: <strong class="text-gray-800">{{ tClicked.name }}</strong> (id={{ tClicked.id }})
+    </p>
+  </div>
+
+  <!-- EModal -->
+  <div class="section">
+    <div class="label">EModal — Teleport · Fade Transition · closeOnOverlay toggle</div>
+    <div class="row">
+      <e-button @click="modal1=true">Buka Modal</e-button>
+      <e-button variant="secondary" @click="modal2=true">Modal — close overlay dinonaktifkan</e-button>
+    </div>
+    <e-modal v-model="modal1" title="Konfirmasi Aktivasi Tema">
+      <p class="text-gray-700">Apakah Anda yakin ingin mengaktifkan tema <strong>Corporate Blue</strong>?</p>
+      <p class="text-sm text-gray-500 mt-1">Semua pengguna akan melihat tema baru ini segera setelah diaktifkan.</p>
+      <template #footer>
+        <e-button variant="ghost" @click="modal1=false">Batal</e-button>
+        <e-button variant="primary" @click="modal1=false">Ya, Aktifkan</e-button>
+      </template>
+    </e-modal>
+    <e-modal v-model="modal2" title="Modal Terkunci" :close-on-overlay="false">
+      <p class="text-gray-700">Klik overlay tidak akan menutup modal ini.</p>
+      <p class="text-sm text-gray-500 mt-1">Gunakan tombol ✕ atau klik Tutup.</p>
+      <template #footer>
+        <e-button variant="danger" @click="modal2=false">Tutup</e-button>
+      </template>
+    </e-modal>
+  </div>
+
+  <!-- EPageContainer -->
+  <div class="section">
+    <div class="label">EPageContainer — Title · Subtitle · Actions slot</div>
+    <div class="border border-gray-200 rounded-xl overflow-hidden bg-white">
+      <e-page-container title="Manajemen Tema" subtitle="Kelola tema dan design tokens untuk seluruh aplikasi enterprise">
+        <template #actions>
+          <div class="flex gap-2">
+            <e-button size="sm" variant="ghost">Export</e-button>
+            <e-button size="sm">+ Tambah Tema</e-button>
+          </div>
+        </template>
+        <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-500 text-center">
+          Konten halaman ada di sini (slot default)
+        </div>
+      </e-page-container>
+    </div>
+  </div>
+
+  <!-- Mixin Demo -->
+  <div class="section">
+    <div class="label">Mixin Demo — PaginationMixin + FormMixin (Options API pattern)</div>
+    <div class="grid grid-cols-2 gap-6">
+
+      <div class="border border-gray-200 rounded-xl p-5 bg-white">
+        <div class="text-sm font-bold text-gray-800 mb-1">PaginationMixin</div>
+        <div class="text-xs text-gray-400 mb-3 font-mono">
+          mixins: [PaginationMixin]
+        </div>
+        <div class="text-xs text-gray-500 mb-3 bg-gray-50 rounded px-3 py-2">
+          Page <strong class="text-gray-800">{{ page+1 }}</strong> / {{ totalPages }} &nbsp;·&nbsp;
+          Total: <strong class="text-gray-800">{{ total }}</strong> &nbsp;·&nbsp;
+          Showing {{ pageFrom }}–{{ pageTo }}
+        </div>
+        <div class="flex flex-wrap gap-1">
+          <e-button size="xs" variant="ghost" :disabled="!hasPrevious" @click="previousPage">← Prev</e-button>
+          <e-button v-for="p in totalPages" :key="p" size="xs"
+            :variant="page===p-1?'primary':'ghost'" @click="goToPage(p-1)">{{ p }}</e-button>
+          <e-button size="xs" variant="ghost" :disabled="!hasNext" @click="nextPage">Next →</e-button>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-xl p-5 bg-white">
+        <div class="text-sm font-bold text-gray-800 mb-1">FormMixin</div>
+        <div class="text-xs text-gray-400 mb-3 font-mono">
+          mixins: [FormMixin]
+        </div>
+        <div class="flex flex-col gap-2">
+          <e-input label="Email" v-model="fv.email" :error="fe.email" placeholder="test@example.com" size="sm"/>
+          <e-input label="Password" type="password" v-model="fv.password" :error="fe.password" placeholder="min 8 karakter" size="sm"/>
+          <e-button size="sm" :loading="fLoading" @click="doSubmit">Submit (coba kosong dulu!)</e-button>
+          <div v-if="fSuccess" class="text-xs text-green-600 font-semibold bg-green-50 rounded px-3 py-2">
+            ✓ Form valid — FormMixin.formSubmit() berhasil!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backend API -->
+  <div class="section">
+    <div class="label">Backend — quarkus-theme-api REST (PostgreSQL · Docker)</div>
+    <div class="flex gap-3 items-center mb-4 flex-wrap">
+      <e-button size="sm" @click="apiAll" :loading="apiLoad">GET /api/themes</e-button>
+      <e-button size="sm" variant="secondary" @click="apiActive" :loading="apiLoad">GET /api/themes/active</e-button>
+      <e-button size="sm" variant="ghost" @click="apiHealth" :loading="apiLoad">GET /q/health</e-button>
+      <e-badge :color="apiSt==='ok'?'success':apiSt==='error'?'error':'secondary'" size="md">
+        {{ apiSt==='ok' ? '✓ API Connected' : apiSt==='error' ? '✗ API Offline / Docker belum jalan' : '— Belum dicoba' }}
+      </e-badge>
+    </div>
+    <pre v-if="apiOut" class="bg-slate-900 text-green-400 text-xs p-4 rounded-xl overflow-x-auto max-h-64">{{ apiOut }}</pre>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="bg-slate-900 px-10 py-4 flex justify-between items-center">
+  <span class="text-slate-500 text-xs">enterprise-libs · Demo Komponen · Options API + Tailwind CSS</span>
+  <span class="text-amber-400 text-sm font-bold">Developed by PT. Temp Solusi Kreasi</span>
+  <span class="text-slate-500 text-xs">© 2026 · All Rights Reserved</span>
+</div>
+
+<script>
+const { createApp, defineComponent } = Vue
+
+// EButton
+const SZ_B = { xs:'px-2 py-1 text-xs', sm:'px-3 py-1.5 text-sm', md:'px-4 py-2 text-base', lg:'px-5 py-2.5 text-lg', xl:'px-6 py-3 text-xl' }
+const VR_B = {
+  primary:   'bg-primary text-white hover:opacity-90',
+  secondary: 'bg-secondary text-white hover:opacity-90',
+  accent:    'bg-accent text-white hover:opacity-90',
+  ghost:     'bg-transparent text-primary border border-primary hover:bg-primary hover:text-white',
+  danger:    'bg-danger text-white hover:opacity-90',
+}
+const EButton = defineComponent({
+  name:'EButton', inheritAttrs:false,
+  template:`<button v-bind="$attrs" :class="c" :disabled="disabled||loading" :type="type" @click="$emit('click',$event)">
+    <span v-if="loading" class="animate-spin inline-block w-3 h-3 border-2 border-current border-t-transparent rounded-full"/><slot/></button>`,
+  props:{ variant:{default:'primary'}, size:{default:'md'}, disabled:{type:Boolean,default:false}, loading:{type:Boolean,default:false}, type:{default:'button'}, block:{type:Boolean,default:false} },
+  emits:['click'],
+  computed:{ c(){ return ['inline-flex items-center justify-center gap-2 font-medium rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed', SZ_B[this.size]||SZ_B.md, VR_B[this.variant]||VR_B.primary, this.block?'w-full':''].filter(Boolean).join(' ') } }
+})
+
+// EInput
+const SZ_I = { sm:'px-2.5 py-1.5 text-sm', md:'px-3 py-2 text-base', lg:'px-3.5 py-2.5 text-lg' }
+let uid=0
+const EInput = defineComponent({
+  name:'EInput', inheritAttrs:false,
+  template:`<div class="flex flex-col gap-1">
+    <label v-if="label" :for="id" class="text-sm font-medium text-e-text">{{label}}</label>
+    <input :id="id" v-bind="$attrs" :value="modelValue" :type="type" :placeholder="placeholder" :disabled="disabled" :class="c" @input="$emit('update:modelValue',$event.target.value)"/>
+    <span v-if="error" class="text-xs text-danger">{{error}}</span>
+    <span v-else-if="hint" class="text-xs text-e-muted">{{hint}}</span></div>`,
+  props:{ modelValue:{default:''}, label:{default:''}, type:{default:'text'}, placeholder:{default:''}, size:{default:'md'}, disabled:{type:Boolean,default:false}, error:{default:''}, hint:{default:''} },
+  emits:['update:modelValue'],
+  data(){ return { id:`ei-${++uid}` } },
+  computed:{ c(){ return ['w-full rounded-md transition-colors outline-none text-e-text bg-e-bg focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed', SZ_I[this.size]||SZ_I.md, this.error?'border border-danger':'border border-e-border'].join(' ') } }
+})
+
+// EBadge
+const SZ_BD={ xs:'px-1.5 py-0.5 text-[0.65rem]', sm:'px-2 py-0.5 text-xs', md:'px-2.5 py-1 text-sm' }
+const CL_BD={ primary:'bg-blue-100 text-blue-700', secondary:'bg-gray-100 text-gray-600', success:'bg-green-100 text-green-700', warning:'bg-amber-100 text-amber-700', error:'bg-red-100 text-red-600', info:'bg-sky-100 text-sky-600' }
+const EBadge = defineComponent({
+  name:'EBadge',
+  template:`<span :class="c"><slot/></span>`,
+  props:{ color:{default:'primary'}, size:{default:'sm'} },
+  computed:{ c(){ return ['inline-flex items-center rounded-full font-medium', SZ_BD[this.size]||SZ_BD.sm, CL_BD[this.color]||CL_BD.primary].join(' ') } }
+})
+
+// ETable
+const AL={ left:'text-left', center:'text-center', right:'text-right' }
+const ETable = defineComponent({
+  name:'ETable',
+  template:`<div class="overflow-x-auto rounded-xl border border-e-border">
+    <table class="w-full border-collapse text-sm">
+      <thead><tr>
+        <th v-for="c in columns" :key="c.key" :class="['px-4 py-3 bg-surface font-semibold whitespace-nowrap text-e-text border-b border-e-border', al(c.align), c.sortable?'cursor-pointer select-none hover:bg-gray-100':'']" @click="c.sortable&&sort(c.key)">
+          {{c.label}}<span v-if="c.sortable&&sk===c.key" class="ml-1">{{sd==='asc'?'↑':'↓'}}</span>
+        </th>
+      </tr></thead>
+      <tbody>
+        <tr v-if="loading"><td :colspan="columns.length" class="text-center py-8 text-e-muted">Loading...</td></tr>
+        <tr v-else-if="!rows.length"><td :colspan="columns.length" class="text-center py-8 text-e-muted">{{emptyText}}</td></tr>
+        <tr v-for="(row,i) in rows" :key="i" class="hover:bg-surface cursor-pointer transition-colors" @click="$emit('row-click',row)">
+          <td v-for="c in columns" :key="c.key" :class="['px-4 py-3 border-b border-e-border text-e-text', al(c.align)]">
+            <slot :name="'cell-'+c.key" :row="row" :value="row[c.key]">{{row[c.key]}}</slot>
+          </td>
+        </tr>
+      </tbody>
+    </table></div>`,
+  props:{ columns:Array, rows:Array, loading:{type:Boolean,default:false}, emptyText:{default:'No data'} },
+  emits:['row-click'],
+  data(){ return { sk:'', sd:'asc' } },
+  methods:{ sort(k){ this.sd=this.sk===k?(this.sd==='asc'?'desc':'asc'):'asc'; this.sk=k }, al(a){ return AL[a||'left'] } }
+})
+
+// EModal
+const EModal = defineComponent({
+  name:'EModal',
+  template:`<Teleport to="body">
+    <Transition enter-active-class="transition-opacity duration-200" enter-from-class="opacity-0" leave-active-class="transition-opacity duration-200" leave-to-class="opacity-0">
+      <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" @click.self="ov">
+        <div class="w-full max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl" :style="{maxWidth:width}" role="dialog">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-e-border">
+            <span class="text-lg font-semibold text-e-text">{{title}}</span>
+            <button class="text-e-muted hover:text-e-text text-xl cursor-pointer bg-transparent border-none leading-none" @click="$emit('update:modelValue',false)">✕</button>
+          </div>
+          <div class="p-6"><slot/></div>
+          <div v-if="$slots.footer" class="flex justify-end gap-2 px-6 py-4 border-t border-e-border"><slot name="footer"/></div>
+        </div>
+      </div>
+    </Transition></Teleport>`,
+  props:{ modelValue:Boolean, title:{default:''}, width:{default:'32rem'}, closeOnOverlay:{type:Boolean,default:true} },
+  emits:['update:modelValue'],
+  methods:{ ov(){ if(this.closeOnOverlay) this.$emit('update:modelValue',false) } }
+})
+
+// EPageContainer
+const EPageContainer = defineComponent({
+  name:'EPageContainer',
+  template:`<main class="px-6 py-6 max-w-7xl mx-auto">
+    <div v-if="title||$slots.header" class="mb-5">
+      <slot name="header">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-e-text m-0">{{title}}</h1>
+            <p v-if="subtitle" class="text-base text-e-muted mt-1 m-0">{{subtitle}}</p>
+          </div>
+          <div v-if="$slots.actions" class="flex-shrink-0"><slot name="actions"/></div>
+        </div>
+      </slot>
+    </div>
+    <slot/></main>`,
+  props:{ title:{default:''}, subtitle:{default:''} }
+})
+
+// App
+createApp({
+  components:{ EButton, EInput, EBadge, ETable, EModal, EPageContainer },
+  data(){
+    return {
+      fEmail:'', fPass:'', fErr:'', fHint:'', fDis:'', fLg:'',
+      modal1:false, modal2:false,
+      tClicked:null,
+      tCols:[
+        { key:'id',    label:'ID',       align:'center', sortable:true },
+        { key:'name',  label:'Nama Tema', sortable:true },
+        { key:'status',label:'Status',    align:'center' },
+        { key:'db',    label:'Database' },
+        { key:'mode',  label:'Mode',      align:'center' },
+      ],
+      tRows:[
+        { id:1, name:'Default Theme',  status:'active',   db:'postgresql', mode:'light' },
+        { id:2, name:'Dark Theme',     status:'inactive', db:'postgresql', mode:'dark' },
+        { id:3, name:'Corporate Blue', status:'inactive', db:'mariadb',    mode:'light' },
+        { id:4, name:'MSSQL Theme',    status:'inactive', db:'mssql',      mode:'light' },
+      ],
+      // PaginationMixin
+      page:0, pageSize:3, total:12,
+      // FormMixin
+      fv:{ email:'', password:'' }, fe:{}, fLoading:false, fSuccess:false,
+      // API
+      apiLoad:false, apiSt:'idle', apiOut:null,
+    }
+  },
+  computed:{
+    totalPages(){ return Math.ceil(this.total/this.pageSize) },
+    hasNext(){ return this.page < this.totalPages-1 },
+    hasPrevious(){ return this.page > 0 },
+    pageFrom(){ return this.page*this.pageSize+1 },
+    pageTo(){ return Math.min((this.page+1)*this.pageSize, this.total) },
+  },
+  methods:{
+    nextPage(){ if(this.hasNext) this.page++ },
+    previousPage(){ if(this.hasPrevious) this.page-- },
+    goToPage(p){ this.page=Math.max(0,Math.min(p,this.totalPages-1)) },
+    tClick(row){ this.tClicked=row },
+    formValidate(){
+      this.fe={}
+      let ok=true
+      if(!this.fv.email){ this.fe.email='Email wajib diisi'; ok=false }
+      else if(!this.fv.email.includes('@')){ this.fe.email='Format email tidak valid'; ok=false }
+      if(!this.fv.password){ this.fe.password='Password wajib diisi'; ok=false }
+      else if(this.fv.password.length<8){ this.fe.password='Minimal 8 karakter'; ok=false }
+      return ok
+    },
+    async doSubmit(){
+      this.fSuccess=false
+      if(!this.formValidate()) return
+      this.fLoading=true
+      await new Promise(r=>setTimeout(r,1200))
+      this.fLoading=false; this.fSuccess=true
+    },
+    async apiAll(){
+      this.apiLoad=true; this.apiOut=null
+      try{
+        const r=await fetch('http://localhost:8080/api/themes')
+        if(!r.ok) throw new Error(`HTTP ${r.status}`)
+        this.apiOut=JSON.stringify(await r.json(),null,2); this.apiSt='ok'
+      }catch(e){ this.apiSt='error'; this.apiOut=`${e.message}\n\nJalankan Docker dulu:\ncd enterprise-libs/backend-libs/quarkus-theme-api\ndocker compose up -d` }
+      finally{ this.apiLoad=false }
+    },
+    async apiActive(){
+      this.apiLoad=true; this.apiOut=null
+      try{
+        const r=await fetch('http://localhost:8080/api/themes/active')
+        if(!r.ok) throw new Error(`HTTP ${r.status}`)
+        this.apiOut=JSON.stringify(await r.json(),null,2); this.apiSt='ok'
+      }catch(e){ this.apiSt='error'; this.apiOut=e.message }
+      finally{ this.apiLoad=false }
+    },
+    async apiHealth(){
+      this.apiLoad=true; this.apiOut=null
+      try{
+        const r=await fetch('http://localhost:8080/q/health')
+        if(!r.ok) throw new Error(`HTTP ${r.status}`)
+        this.apiOut=JSON.stringify(await r.json(),null,2); this.apiSt='ok'
+      }catch(e){ this.apiSt='error'; this.apiOut=e.message }
+      finally{ this.apiLoad=false }
+    },
+  }
+}).mount('#app')
+</script>
+</body>
+</html>
