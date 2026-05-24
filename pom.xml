@@ -4,25 +4,84 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- ── Coordinates ──────────────────────────────────────────────────── -->
   <groupId>com.enterprise</groupId>
   <artifactId>enterprise-libs</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>enterprise-libs</name>
 
+  <!-- ── Maven Central required metadata ──────────────────────────────── -->
+  <name>enterprise-libs</name>
+  <description>Enterprise monorepo framework — Quarkus/Java backend + Nuxt 3/TypeScript frontend libraries</description>
+  <url>https://github.com/JackD-Creator/Java-Devx</url>
+  <inceptionYear>2026</inceptionYear>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>PT. Temp Solusi Kreasi</name>
+    <url>https://temp.co.id</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>enterprise-dev</id>
+      <name>PT. Temp Solusi Kreasi</name>
+      <email>makkih@temp.co.id</email>
+      <organization>PT. Temp Solusi Kreasi</organization>
+      <organizationUrl>https://temp.co.id</organizationUrl>
+      <roles><role>developer</role></roles>
+      <timezone>Asia/Jakarta</timezone>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/JackD-Creator/Java-Devx.git</connection>
+    <developerConnection>scm:git:ssh://github.com/JackD-Creator/Java-Devx.git</developerConnection>
+    <url>https://github.com/JackD-Creator/Java-Devx</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/JackD-Creator/Java-Devx/issues</url>
+  </issueManagement>
+
+  <!-- ── Modules ───────────────────────────────────────────────────────── -->
   <modules>
     <module>backend-libs/quarkus-db-adapter</module>
     <module>backend-libs/quarkus-encryption</module>
     <module>backend-libs/quarkus-theme-api</module>
   </modules>
 
+  <!-- ── Properties ───────────────────────────────────────────────────── -->
   <properties>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.version>3.15.1</quarkus.platform.version>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
   </properties>
 
+  <!-- ── Distribution Management (Maven Central Portal) ───────────────── -->
+  <distributionManagement>
+    <snapshotRepository>
+      <id>central</id>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>central</id>
+      <url>https://central.sonatype.com/repository/maven-releases/</url>
+    </repository>
+  </distributionManagement>
+
+  <!-- ── Dependency Management ────────────────────────────────────────── -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -35,9 +94,12 @@
     </dependencies>
   </dependencyManagement>
 
+  <!-- ── Build ─────────────────────────────────────────────────────────── -->
   <build>
     <pluginManagement>
       <plugins>
+
+        <!-- Quarkus -->
         <plugin>
           <groupId>${quarkus.platform.group-id}</groupId>
           <artifactId>quarkus-maven-plugin</artifactId>
@@ -53,12 +115,121 @@
             </execution>
           </executions>
         </plugin>
+
+        <!-- Compiler -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+          <configuration>
+            <release>21</release>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+
+        <!-- Tests -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.2.5</version>
         </plugin>
+
+        <!-- Sources JAR — required by Maven Central -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.3.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals><goal>jar-no-fork</goal></goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- Javadoc JAR — required by Maven Central -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.7.0</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+            <doclint>none</doclint>
+          </configuration>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals><goal>jar</goal></goals>
+            </execution>
+          </executions>
+        </plugin>
+
       </plugins>
     </pluginManagement>
   </build>
+
+  <!-- ── Profiles ──────────────────────────────────────────────────────── -->
+  <profiles>
+
+    <!-- Native binary build -->
+    <profile>
+      <id>native</id>
+      <properties>
+        <quarkus.package.type>native</quarkus.package.type>
+        <quarkus.native.container-build>true</quarkus.native.container-build>
+      </properties>
+    </profile>
+
+    <!--
+      Release profile — aktifkan dengan: mvn deploy -P release
+      Prasyarat:
+        1. Daftarkan groupId di https://central.sonatype.com
+        2. ~/.m2/settings.xml dengan credentials:
+             <server><id>central</id><username>TOKEN</username><password>TOKEN_PASSWORD</password></server>
+        3. GPG key: gpg --gen-key
+        4. Upload key: gpg --keyserver keyserver.ubuntu.com --send-keys <KEY_ID>
+    -->
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+
+          <!-- GPG signing — required by Maven Central -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.4</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals><goal>sign</goal></goals>
+                <configuration>
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                  </gpgArguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Central Publishing Plugin (pengganti nexus-staging) -->
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.5.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>false</autoPublish>
+            </configuration>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
 </project>

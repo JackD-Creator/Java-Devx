@@ -1,0 +1,62 @@
+name: Feature Request
+description: Usulkan fitur atau peningkatan baru
+title: "feat(<scope>): "
+labels: ["enhancement"]
+
+body:
+  - type: dropdown
+    id: module
+    attributes:
+      label: Modul Target
+      description: Di modul mana fitur ini akan ditambahkan?
+      options:
+        - quarkus-db-adapter
+        - quarkus-encryption
+        - quarkus-theme-api
+        - nuxt-ui-lib
+        - nuxt-composables
+        - nuxt-theme-lib
+        - Modul Baru
+        - Infrastruktur / CI
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah yang Ingin Diselesaikan
+      description: Jelaskan masalah atau kebutuhan yang melatarbelakangi fitur ini
+      placeholder: "Saya sering mengalami... / Tim kami membutuhkan..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solusi yang Diusulkan
+      description: Jelaskan fitur yang diinginkan secara detail
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatif yang Sudah Dipertimbangkan
+      description: Apakah ada cara lain untuk menyelesaikan masalah ini?
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioritas
+      options:
+        - Low — nice to have
+        - Medium — dibutuhkan dalam 1-2 sprint
+        - High — blocking saat ini
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Konteks Tambahan
+      description: Screenshot, referensi, atau contoh dari proyek lain

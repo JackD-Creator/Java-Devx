@@ -1,22 +1,33 @@
 <template>
-  <main class="e-page">
-    <div class="e-page__header" v-if="title || $slots.header">
+  <main class="px-6 py-6 max-w-7xl mx-auto">
+    <div v-if="title || $slots.header" class="mb-6">
       <slot name="header">
-        <h1 class="e-page__title">{{ title }}</h1>
-        <p v-if="subtitle" class="e-page__subtitle">{{ subtitle }}</p>
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-e-text m-0">{{ title }}</h1>
+            <p v-if="subtitle" class="text-base text-e-muted mt-1 m-0">{{ subtitle }}</p>
+          </div>
+          <div v-if="$slots.actions" class="flex-shrink-0">
+            <slot name="actions" />
+          </div>
+        </div>
       </slot>
     </div>
-    <div class="e-page__body"><slot /></div>
+    <div>
+      <slot />
+    </div>
   </main>
 </template>
 
-<script setup lang="ts">
-defineProps<{ title?: string; subtitle?: string }>()
-</script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 
-<style scoped>
-.e-page         { padding: 1.5rem; max-width: 1280px; margin: 0 auto; }
-.e-page__header { margin-bottom: 1.5rem; }
-.e-page__title  { font-size: var(--font-size-2xl, 1.5rem); font-weight: var(--font-weight-bold, 700); color: var(--color-text, #111827); margin: 0; }
-.e-page__subtitle { font-size: var(--font-size-base, 1rem); color: var(--color-text-muted, #6B7280); margin: 0.25rem 0 0; }
-</style>
+export default defineComponent({
+  name: 'EPageContainer',
+
+  props: {
+    title:    { type: String, default: '' },
+    subtitle: { type: String, default: '' },
+  },
+})
+</script>

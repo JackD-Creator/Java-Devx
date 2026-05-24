@@ -1,0 +1,41 @@
+# EditorConfig — https://editorconfig.org
+# Pastikan IDE/editor membaca file ini untuk konsistensi kode antar developer
+
+root = true
+
+# ── Default: semua file ───────────────────────────────────────────────────────
+[*]
+charset                  = utf-8
+end_of_line              = lf
+indent_style             = space
+indent_size              = 2
+trim_trailing_whitespace = true
+insert_final_newline     = true
+
+# ── Java ──────────────────────────────────────────────────────────────────────
+[*.java]
+indent_size = 4
+
+# ── XML (pom.xml, Dockerfile, etc.) ──────────────────────────────────────────
+[*.xml]
+indent_size = 2
+
+# ── SQL migration files ───────────────────────────────────────────────────────
+[*.sql]
+indent_size = 4
+
+# ── Markdown ──────────────────────────────────────────────────────────────────
+[*.md]
+trim_trailing_whitespace = false
+
+# ── YAML / properties ─────────────────────────────────────────────────────────
+[*.{yml,yaml,properties}]
+indent_size = 2
+
+# ── TypeScript / Vue ──────────────────────────────────────────────────────────
+[*.{ts,vue}]
+indent_size = 2
+
+# ── JSON ──────────────────────────────────────────────────────────────────────
+[*.json]
+indent_size = 2
